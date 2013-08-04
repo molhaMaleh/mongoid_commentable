@@ -1,7 +1,7 @@
 class CommentsController < ActionController::Base
   
-  prepend_before_filter :get_model
-  before_filter :get_comment, :only => [:show, :edit, :update, :destroy]
+  prepend_before_action :get_model
+  before_action :get_comment, :only => [:show, :edit, :update, :destroy]
 
   respond_to :html
   
@@ -23,7 +23,7 @@ class CommentsController < ActionController::Base
   end
 
   def create
-    @comment = @model.create_comment!(params[:comment])
+    @comment = @model.create_comment!(comment_params)
     if @comment.save
       flash[:notice] = 'Comment was successfully created.'
     else
@@ -33,7 +33,7 @@ class CommentsController < ActionController::Base
   end
 
   def update
-    if @comment.update_attributes(params[:comment])
+    if @comment.update_attributes(comment_params)
       flash[:notice] = 'Comment was successfully updated.'
     else
       flash[:error] = 'Comment wasn\'t deleted.'
@@ -58,6 +58,10 @@ class CommentsController < ActionController::Base
   
   def get_comment
     @comment = @model.comments.find(params[:id])
+  end
+
+  def comment_params
+    params.require(:comment).permit(:text, :author)
   end
 
 end
