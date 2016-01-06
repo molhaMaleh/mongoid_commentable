@@ -2,6 +2,7 @@ source "http://rubygems.org"
 
 gem "mongoid", ">= 2.2"
 gem "bson_ext", ">= 1.3"
+gem "pusher"
 
 group :development do
   gem "rr"
