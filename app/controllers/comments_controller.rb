@@ -23,15 +23,7 @@ class CommentsController < ActionController::Base
   end
 
   def new
-    @comment = Comment.new(:parent => params[:parent]
-    @p_id=@model.id
-
-    Pusher.trigger(@model.id, 'comment', {
-        message: @comment.text,
-        a_tag: "<a href='/researchers/"+current_researcher.id.to_s()+"'>"+current_researcher.username.to_s()+"</a>"
-      })  
-    
-    render :nothing => true
+    respond_with([@model,@comment = Comment.new(:parent => params[:parent])])
   end
 
   def edit
@@ -45,7 +37,13 @@ class CommentsController < ActionController::Base
     else
       flash[:error] = 'Comment wasn\'t created.'
     end
-    respond_with(@model)
+
+    Pusher.trigger(@model.id, 'comment', {
+        message: @comment.text,
+        a_tag: "<a href='/researchers/"+current_researcher.id.to_s()+"'>"+current_researcher.username.to_s()+"</a>"
+      })  
+
+    render :nothing => true
   end
 
   def update
