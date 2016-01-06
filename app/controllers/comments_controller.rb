@@ -1,3 +1,11 @@
+require 'pusher'
+
+Pusher.app_id = '129623' #I've provided the correct app_id
+Pusher.key =  '80b5913c49bad64d4921'
+Pusher.secret = '2f89c7340e377d19b4b2' #I've provided the correct app_secret
+Pusher.url = "https://80b5913c49bad64d4921:2f89c7340e377d19b4b2@api.pusherapp.com/apps/129623"
+Pusher.logger = Rails.logger
+
 class CommentsController < ActionController::Base
   
   prepend_before_action :get_model
@@ -16,6 +24,14 @@ class CommentsController < ActionController::Base
 
   def new
     respond_with([@model,@comment = Comment.new(:parent => params[:parent])])
+
+    @p_id=@model.id
+    Pusher.trigger(@model.id, 'comment', {
+        message: @comment.text
+      })  
+
+    render :file=>'shared/ajaxcomment' , :layout=>false
+
   end
 
   def edit
