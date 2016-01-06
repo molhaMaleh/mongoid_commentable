@@ -23,15 +23,15 @@ class CommentsController < ActionController::Base
   end
 
   def new
-    respond_with([@model,@comment = Comment.new(:parent => params[:parent])])
-
+    @comment = Comment.new(:parent => params[:parent]
     @p_id=@model.id
+
     Pusher.trigger(@model.id, 'comment', {
-        message: @comment.text
+        message: @comment.text,
+        a_tag: "<a href='/researchers/"+current_researcher.id.to_s()+"'>"+current_researcher.username.to_s()+"</a>"
       })  
-
-    render :file=>'shared/ajaxcomment' , :layout=>false
-
+    
+    render :nothing => true
   end
 
   def edit
